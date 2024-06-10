@@ -1,0 +1,4 @@
+package.json
+public
+**/assets/svg/*.svg
+**/assets/**/*.json

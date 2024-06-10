@@ -1,0 +1,10 @@
+node_modules
+.history
+.ignore
+
+./dist*
+
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
