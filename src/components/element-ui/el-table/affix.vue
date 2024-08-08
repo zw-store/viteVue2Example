@@ -6,7 +6,7 @@
  -->
 
 <template>
-  <div :style="{ height: fixed && $el.offsetHeight + 'px' }">
+  <div :style="{ height: fixed && offsetHeight + 'px' }">
     <div :class="bem({ fixed })" :style="style">
       <slot></slot>
     </div>
@@ -101,6 +101,7 @@ export default {
       top: 0,
       fixed: false,
       transform: 0,
+      offsetHeight: 0,
     }
   },
   props: {
@@ -153,7 +154,7 @@ export default {
       if (isHidden(this.$el)) return
 
       const { container, offsetTopPx } = this
-      const height = this.$el.offsetHeight
+      const height = (this.offsetHeight = this.$el.offsetHeight || this.offsetHeight)
       const scrollTop = e?.target ? getScrollTop(e.target) : getScrollTop(window)
       const scrollerTop = getScrollTop(this.scroller)
       const topToPageTop = getElementTop(this.$el, this.scroller)
