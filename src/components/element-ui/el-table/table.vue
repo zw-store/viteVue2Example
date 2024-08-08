@@ -610,36 +610,38 @@ export default {
     hiddenColumns: {
       immediate: true,
       handler(value) {
-        const { states } = this.store
-        const { _columns } = states
+        this.$nextTick(() => {
+          const { states } = this.store
+          const { _columns } = states
 
-        if (!this.cache_columns || !this.cache_columns.length) {
-          this.cache_columns = deepClone(_columns)
-        }
+          if (!this.cache_columns || !this.cache_columns.length) {
+            this.cache_columns = deepClone(_columns)
+          }
 
-        const show = this.cache_columns.filter(x => {
-          if (['selection', 'index', 'expand'].includes(x.type)) return false
-          if (['#', '操作'].includes(x.label)) return false
-          return !value.includes(x.label)
-        })
+          const show = this.cache_columns.filter(x => {
+            if (['selection', 'index', 'expand'].includes(x.type)) return false
+            if (['#', '操作'].includes(x.label)) return false
+            return !value.includes(x.label)
+          })
 
-        const showLabels = _columns.map(x => x.label)
+          const showLabels = _columns.map(x => x.label)
 
-        show.forEach(item => {
-          if (showLabels.includes(item.label)) return
-          this.store.commit('insertColumn', item, item.insertColumnIndex)
-        })
+          show.forEach(item => {
+            if (showLabels.includes(item.label)) return
+            this.store.commit('insertColumn', item, item.insertColumnIndex)
+          })
 
-        const hide = this.cache_columns.filter(x => {
-          if (['selection', 'index', 'expand'].includes(x.type)) return false
-          if (['#', '操作'].includes(x.label)) return false
-          return value.includes(x.label)
-        })
+          const hide = this.cache_columns.filter(x => {
+            if (['selection', 'index', 'expand'].includes(x.type)) return false
+            if (['#', '操作'].includes(x.label)) return false
+            return value.includes(x.label)
+          })
 
-        hide.forEach(item => {
-          const column = _columns.find(x => x.label === item.label)
-          if (!column) return
-          this.store.commit('removeColumn', column)
+          hide.forEach(item => {
+            const column = _columns.find(x => x.label === item.label)
+            if (!column) return
+            this.store.commit('removeColumn', column)
+          })
         })
       },
     },
