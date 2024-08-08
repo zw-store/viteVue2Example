@@ -68,21 +68,21 @@ export default {
 
     const { componentName } = this
     const tableMap = localstorageGet(Key)
-    const columns = this.rectifyHidden(tableMap, componentName)
+    let columns = this.rectifyHidden(tableMap, componentName)
 
     if (columns) {
       this.checks = this.table.checkTableInfo.filter(item => !columns.includes(item))
-      this.$emit('interaction', columns)
       localstorageSet(Key, tableMap)
     } else {
-      const arr = this.table.checkTableInfo.filter(item => !this.checks.includes(item))
-      this.$emit('interaction', arr)
+      columns = this.table.checkTableInfo.filter(item => !this.checks.includes(item))
     }
+
+    this.$emit('interaction', columns)
   },
   methods: {
     rectifyHidden(tableMap, componentName) {
       tableMap.hidden = tableMap.hidden || {}
-      tableMap.hidden[componentName] = tableMap.hidden[componentName] || []
+      tableMap.hidden[componentName] = tableMap.hidden[componentName] || this.table.hiddenColumns || []
       return tableMap.hidden[componentName]
     },
     rectifyDragger(tableMap, componentName) {
