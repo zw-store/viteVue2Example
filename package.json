@@ -44,5 +44,8 @@
     "vite-plugin-mock": "^3.0.1",
     "vite-plugin-svg-icons": "^2.0.1",
     "vue-template-compiler": "^2.7.14"
+  },
+  "engines": {
+    "node": "14.x"
   }
 }
