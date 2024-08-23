@@ -238,6 +238,7 @@ export default {
 
       const style = {
         top: this.scroller ? getElementTop(this.scroller) + 'px' : 0,
+        width: this.$el.offsetWidth + 'px',
       }
 
       if (this.zIndex == null) style.zIndex = this.zIndex

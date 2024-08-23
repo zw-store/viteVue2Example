@@ -27,9 +27,13 @@
     <RightToolbar :show-search.sync="showSearch" :table.sync="table" @queryTable="getList" @interaction="x => (table.hiddenColumns = x)" :componentName="$options.name" @sequence-reset="tableReady"></RightToolbar>
 
     <el-table :data="table.data" v-loading="table.loading" border stripe :header-cell-style="{ backgroundColor: '#efefef' }" :hidden-columns="table.hiddenColumns" @header-cell-dragend="headerCellDragend" @header-dragend="headerDragend" @table-ready="tableReady">
-      <el-table-column align="center" type="index" label="#" />
-      <el-table-column align="center" prop="name" label="名称" />
-      <el-table-column align="center" prop="address" label="地址" />
+      <el-table-column align="center" type="index" label="#" fixed="left" />
+      <el-table-column align="center" prop="name" label="名称" width="200" />
+      <el-table-column align="center" prop="address" label="地址" width="200" />
+      <el-table-column align="center" prop="address1" label="地址1" width="200" />
+      <el-table-column align="center" prop="address2" label="地址2" width="200" />
+      <el-table-column align="center" prop="address3" label="地址3" width="200" />
+      <el-table-column align="center" prop="address4" label="地址4" width="200" />
 
       <el-table-column align="center" prop="tags" label="标签">
         <template slot-scope="{ row, column: col }">
@@ -39,7 +43,7 @@
 
       <el-table-column align="center" prop="date" label="时间" />
 
-      <el-table-column align="center" label="操作">
+      <el-table-column align="center" label="操作" fixed="right">
         <template slot-scope="{ row, column: col }">
           <el-button type="text" size="mini">删除</el-button>
         </template>
@@ -67,7 +71,7 @@ export default {
       },
       table: {
         loading: false,
-        data: Array.from({ length: 30 }, () => ({ date: '2024-06-08', name: 'John Brown', address: 'New York No. 1 Lake Park', tags: ['nice', 'developer'] })),
+        data: Array.from({ length: 30 }, () => ({ date: '2024-06-08', name: 'John Brown', address: 'New York No. 1 Lake Park', address1: 'New York No. 1 Lake Park', address2: 'New York No. 1 Lake Park', address3: 'New York No. 1 Lake Park', address4: 'New York No. 1 Lake Park', tags: ['nice', 'developer'] })),
         hiddenColumns: [],
         checkTableInfo: ['名称', '地址', '标签', '时间', '操作'],
       },
