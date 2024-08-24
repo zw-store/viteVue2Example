@@ -92,6 +92,11 @@ function getScroller(el, root = window) {
 
   return root
 }
+function getChildrenHeight(el) {
+  if (!el || !el.children.length) return 0
+
+  return Array.from(el.children).reduce((sum, node) => sum + node.offsetHeight, 0)
+}
 export default {
   name: 'affix',
   data() {
@@ -154,7 +159,7 @@ export default {
       if (isHidden(this.$el)) return
 
       const { container, offsetTopPx } = this
-      const height = (this.offsetHeight = this.$el.offsetHeight || this.offsetHeight)
+      const height = (this.offsetHeight = this.$el.offsetHeight || this.offsetHeight || getChildrenHeight(this.$el.firstChild))
       const scrollTop = e?.target ? getScrollTop(e.target) : getScrollTop(window)
       const scrollerTop = getScrollTop(this.scroller)
       const topToPageTop = getElementTop(this.$el, this.scroller)

@@ -88,17 +88,19 @@
         fixedHeight,
       ]"
     >
-      <div v-if="showHeader" class="el-table__fixed-header-wrapper" ref="fixedHeaderWrapper">
-        <table-header
-          ref="fixedTableHeader"
-          fixed="left"
-          :border="border"
-          :store="store"
-          :style="{
-            width: bodyWidth,
-          }"
-        ></table-header>
-      </div>
+      <affix :container="$el" :disabled="disabledAffix">
+        <div v-if="showHeader" class="el-table__fixed-header-wrapper" style="position: unset; overflow: auto" ref="fixedHeaderWrapper">
+          <table-header
+            ref="fixedTableHeader"
+            fixed="left"
+            :border="border"
+            :store="store"
+            :style="{
+              width: bodyWidth,
+            }"
+          ></table-header>
+        </div>
+      </affix>
       <div
         class="el-table__fixed-body-wrapper"
         ref="fixedBodyWrapper"
@@ -149,17 +151,19 @@
         fixedHeight,
       ]"
     >
-      <div v-if="showHeader" class="el-table__fixed-header-wrapper" ref="rightFixedHeaderWrapper">
-        <table-header
-          ref="rightFixedTableHeader"
-          fixed="right"
-          :border="border"
-          :store="store"
-          :style="{
-            width: bodyWidth,
-          }"
-        ></table-header>
-      </div>
+      <affix :container="$el" :disabled="disabledAffix">
+        <div v-if="showHeader" class="el-table__fixed-header-wrapper" style="pointer-events: none; overflow: auto" ref="rightFixedHeaderWrapper">
+          <table-header
+            ref="rightFixedTableHeader"
+            fixed="right"
+            :border="border"
+            :store="store"
+            :style="{
+              width: bodyWidth,
+            }"
+          ></table-header>
+        </div>
+      </affix>
       <div
         class="el-table__fixed-body-wrapper"
         ref="rightFixedBodyWrapper"
@@ -262,4 +266,9 @@ export default {
 }
 </script>
 
-<style lang="css" scoped></style>
+<style lang="scss" scoped>
+::v-deep .el-table__fixed-right .is-hidden {
+  visibility: hidden;
+  pointer-events: none;
+}
+</style>

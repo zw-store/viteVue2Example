@@ -30,10 +30,9 @@
       <el-table-column align="center" type="index" label="#" fixed="left" />
       <el-table-column align="center" prop="name" label="名称" width="200" />
       <el-table-column align="center" prop="address" label="地址" width="200" />
-      <el-table-column align="center" prop="address1" label="地址1" width="200" />
-      <el-table-column align="center" prop="address2" label="地址2" width="200" />
-      <el-table-column align="center" prop="address3" label="地址3" width="200" />
-      <el-table-column align="center" prop="address4" label="地址4" width="200" />
+      <template v-for="n in 6">
+        <el-table-column align="center" :prop="`address${n}`" :label="`地址${n}`" width="200" :key="n" />
+      </template>
 
       <el-table-column align="center" prop="tags" label="标签">
         <template slot-scope="{ row, column: col }">
@@ -41,7 +40,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" prop="date" label="时间" />
+      <el-table-column align="center" prop="date" label="时间" fixed="right" />
 
       <el-table-column align="center" label="操作" fixed="right">
         <template slot-scope="{ row, column: col }">
@@ -71,7 +70,17 @@ export default {
       },
       table: {
         loading: false,
-        data: Array.from({ length: 30 }, () => ({ date: '2024-06-08', name: 'John Brown', address: 'New York No. 1 Lake Park', address1: 'New York No. 1 Lake Park', address2: 'New York No. 1 Lake Park', address3: 'New York No. 1 Lake Park', address4: 'New York No. 1 Lake Park', tags: ['nice', 'developer'] })),
+        data: Array.from({ length: 30 }, () => ({
+          date: '2024-06-08',
+          name: 'John Brown',
+          address: 'New York No. 1 Lake Park',
+          address0: 'New York No. 1 Lake Park',
+          address1: 'New York No. 1 Lake Park',
+          address2: 'New York No. 1 Lake Park',
+          address3: 'New York No. 1 Lake Park',
+          address4: 'New York No. 1 Lake Park',
+          tags: ['nice', 'developer'],
+        })),
         hiddenColumns: [],
         checkTableInfo: ['名称', '地址', '标签', '时间', '操作'],
       },
