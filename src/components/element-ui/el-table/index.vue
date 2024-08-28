@@ -89,7 +89,7 @@
       ]"
     >
       <affix :container="$el" :disabled="disabledAffix">
-        <div v-if="showHeader" class="el-table__fixed-header-wrapper" style="position: unset; overflow: auto" ref="fixedHeaderWrapper">
+        <div v-if="showHeader" class="el-table__fixed-header-wrapper" style="position: unset; overflow: hidden" ref="fixedHeaderWrapper">
           <table-header
             ref="fixedTableHeader"
             fixed="left"
