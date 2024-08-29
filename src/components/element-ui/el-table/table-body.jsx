@@ -148,7 +148,7 @@ export default {
     },
 
     getRowStyle(row, rowIndex) {
-      const rowStyle = this.table.rowStyle
+      const rowStyle = this.rowStyle
       if (typeof rowStyle === 'function') {
         return rowStyle.call(null, {
           row,
@@ -167,7 +167,7 @@ export default {
       if (this.stripe && rowIndex % 2 === 1) {
         classes.push('el-table__row--striped')
       }
-      const rowClassName = this.table.rowClassName
+      const rowClassName = this.rowClassName
       if (typeof rowClassName === 'string') {
         classes.push(rowClassName)
       } else if (typeof rowClassName === 'function') {

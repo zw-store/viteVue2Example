@@ -46,8 +46,8 @@
         :context="context"
         :store="store"
         :stripe="stripe"
-        :row-class-name="rowClassName"
-        :row-style="rowStyle"
+        :row-class-name="rowClassNameOverride"
+        :row-style="rowStyleOverride"
         :highlight="highlightCurrentRow"
         :style="{
           width: bodyWidth,
@@ -116,8 +116,8 @@
           :store="store"
           :stripe="stripe"
           :highlight="highlightCurrentRow"
-          :row-class-name="rowClassName"
-          :row-style="rowStyle"
+          :row-class-name="rowClassNameOverride"
+          :row-style="rowStyleOverride"
           :style="{
             width: bodyWidth,
           }"
@@ -178,8 +178,8 @@
           fixed="right"
           :store="store"
           :stripe="stripe"
-          :row-class-name="rowClassName"
-          :row-style="rowStyle"
+          :row-class-name="rowClassNameOverride"
+          :row-style="rowStyleOverride"
           :highlight="highlightCurrentRow"
           :style="{
             width: bodyWidth,
@@ -263,6 +263,57 @@ export default {
     load: Function,
     disabledAffix: Boolean,
   },
+  methods: {
+    doLayout() {
+      Table.methods.doLayout.call(this)
+      this.syncEachRowHeight()
+    },
+
+    syncEachRowHeight() {
+      const table = this.$el
+
+      table.querySelectorAll('tr').forEach(tr => {
+        tr.style.setProperty('--row-height', tr.offsetHeight + 'px')
+      })
+    },
+
+    rowClassNameOverride({ row }) {
+      const { rowClassName } = this
+      let className = { 'row-process': true }
+
+      if (typeof rowClassName === 'function') {
+        className = { ...className, ...rowClassName({ row }) }
+      }
+
+      if (typeof rowClassName === 'string') {
+        className = { ...className, [rowClassName]: true }
+      }
+
+      return className
+    },
+
+    rowStyleOverride({ row, index }) {
+      const { rowStyle } = this
+      let style = {
+        '--process': `${Math.abs(parseInt(row.ratio))}%`,
+        '--process-color': row.ratio > 0 ? '#67c23a' : '#f56c6c',
+      }
+
+      if (typeof rowStyle === 'function') {
+        style = { ...style, ...rowStyle({ row, index }) }
+      }
+
+      if (typeof rowStyle === 'object') {
+        style = { ...style, ...rowStyle }
+      }
+
+      return style
+    },
+  },
+
+  updated() {
+    this.syncEachRowHeight()
+  },
 }
 </script>
 
@@ -270,5 +321,16 @@ export default {
 ::v-deep .el-table__fixed-right .is-hidden {
   visibility: hidden;
   pointer-events: none;
+}
+
+.el-table ::v-deep .row-process::after {
+  content: '';
+  transition: width 0.3 ease;
+  background-color: var(--process-color, #409eff);
+  width: var(--process, 0%);
+  margin-top: calc(var(--row-height) - 4px);
+  height: 3px;
+  position: absolute;
+  left: 0;
 }
 </style>
