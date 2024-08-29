@@ -6,9 +6,7 @@
  -->
 
 <template>
-  <layout>
-    <template #header> </template>
-
+  <div>
     <el-form v-show="showSearch" class="border-[1px] border-[#dfdfdf]" :model="queryParams.form" size="mini" inline label-width="110px">
       <el-form-item class="my-2.5" label="Name">
         <el-input v-model="queryParams.name" placeholder="Name" clearable />
@@ -48,16 +46,14 @@
         </template>
       </el-table-column>
     </el-table>
-  </layout>
+  </div>
 </template>
 
 <script>
-import layout from '@/layout'
 import tableHeaderDragMixin from '@/mixins/table-header-drag'
 
 export default {
   name: 'test',
-  components: { layout },
   mixins: [tableHeaderDragMixin],
   data() {
     return {
