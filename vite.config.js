@@ -25,6 +25,7 @@ export default defineConfig(({ mode, command }) => {
     server: {
       port: 10001,
       host: true,
+      cors: true,
       proxy: {
         [env.VITE_API_PREFIX]: {
           target: 'https://example:port',

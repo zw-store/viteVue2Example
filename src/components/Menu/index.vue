@@ -22,7 +22,8 @@
     <el-menu-item index="/camera">摄像头</el-menu-item>
     <el-menu-item index="/other">其他</el-menu-item>
     <el-menu-item index="/test">测试数据</el-menu-item>
-    <el-menu-item index="/test2">测试数据</el-menu-item>
+    <el-menu-item index="/test2">测试数据2</el-menu-item>
+    <el-menu-item index="/waterfall">瀑布流</el-menu-item>
   </el-menu>
 </template>
 

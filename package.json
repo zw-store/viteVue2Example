@@ -18,6 +18,7 @@
     "element-ui": "^2.15.14",
     "js-cookie": "^3.0.5",
     "lodash-es": "^4.17.21",
+    "masonry-layout": "^4.2.2",
     "sortablejs": "^1.15.2",
     "vue": "^2.7.14",
     "vue-router": "^3.6.5",

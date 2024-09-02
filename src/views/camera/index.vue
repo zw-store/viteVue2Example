@@ -6,11 +6,12 @@
  -->
 
 <template>
-  <el-row :gutter="10">
-    <el-col :span="8">
-      <el-col>
+  <Waterfall ref="waterfall" :gutter="10">
+    <WaterfallItem width="30%">
+      <div>
         <el-card style="height: 148px" :body-style="{ padding: 0, height: '100%' }">
           <template #header>
+            <el-button type="success" size="mini" @click="$refs.waterfall.layout()">xxx</el-button>
             <p>新增摄像头环比上月{{ ratioPerMonth(currMonth.newCamera, prevMonth.newCamera) >= 0 ? '增长' : '减少' }} ：{{ Math.abs(ratioPerMonth(currMonth.newCamera, prevMonth.newCamera)) }}%</p>
           </template>
 
@@ -24,9 +25,9 @@
             </el-volume-item>
           </el-volume>
         </el-card>
-      </el-col>
+      </div>
 
-      <el-col>
+      <div>
         <el-card style="height: 148px" :body-style="{ padding: 0, height: '100%' }">
           <template #header>
             <p>活跃摄像头环比上月{{ ratioPerMonth(currMonth.activeCamera, prevMonth.activeCamera) >= 0 ? '增长' : '减少' }} ： {{ Math.abs(ratioPerMonth(currMonth.activeCamera, prevMonth.activeCamera)) }}%</p>
@@ -42,9 +43,9 @@
             </el-volume-item>
           </el-volume>
         </el-card>
-      </el-col>
+      </div>
 
-      <el-col>
+      <div>
         <el-card style="height: 148px" :body-style="{ padding: 0, height: '100%' }">
           <template #header>
             <p>僵尸摄像头环比上月{{ ratioPerMonth(currMonth.zombieCamera, prevMonth.zombieCamera) >= 0 ? '增长' : '减少' }} ： {{ Math.abs(ratioPerMonth(currMonth.zombieCamera, prevMonth.zombieCamera)) }}%</p>
@@ -60,10 +61,10 @@
             </el-volume-item>
           </el-volume>
         </el-card>
-      </el-col>
-    </el-col>
+      </div>
+    </WaterfallItem>
 
-    <el-col :span="8">
+    <WaterfallItem width="30%">
       <el-card>
         <template #header>
           地区摄像头新增数据
@@ -80,9 +81,9 @@
           <el-table-column align="center" prop="ratio" label="较比上月" :formatter="(_, __, val) => `${parseInt(val) >= 0 ? '增加' : '减少'}${Math.abs(val)}%`" />
         </el-table>
       </el-card>
-    </el-col>
+    </WaterfallItem>
 
-    <el-col :span="8">
+    <WaterfallItem width="30%">
       <el-card>
         <template #header>
           所属单位摄像头新增数据
@@ -100,12 +101,12 @@
           <el-table-column align="center" prop="ratio" label="较比上月" />
         </el-table>
       </el-card>
-    </el-col>
+    </WaterfallItem>
 
-    <el-col :span="8">
+    <WaterfallItem width="35%">
       <el-card>
         <template #header>
-          重点状态摄像头 T5 数据
+          重点摄像头 Top5 数据
           <el-radio-group class="float-right scale-90" size="mini" v-model="radio1">
             <el-radio-button label="本月"></el-radio-button>
             <el-radio-button label="上月"></el-radio-button>
@@ -120,17 +121,38 @@
           <el-table-column align="center" prop="ratio" label="较比上月" />
         </el-table>
       </el-card>
-    </el-col>
+    </WaterfallItem>
 
-    <el-col :span="8">
-      <div ref="chart" style="height: 450px"></div>
-    </el-col>
-  </el-row>
+    <WaterfallItem width="35%" height="400px">
+      <div ref="chart" style="width: 100%; height: 100%; background-color: #fff"></div>
+    </WaterfallItem>
+
+    <WaterfallItem width="320px">
+      <el-card>
+        <template #header>
+          地区摄像头新增数据
+          <el-radio-group class="float-right scale-90" size="mini" v-model="radio1">
+            <el-radio-button label="本月"></el-radio-button>
+            <el-radio-button label="上月"></el-radio-button>
+          </el-radio-group>
+        </template>
+
+        <el-alert type="warning" :closable="false" size="mini" class="!py-0">地区摄像头新增率高，表示得到重视。</el-alert>
+        <el-table size="mini" :data="terminalOwner1" stripe :header-cell-style="{ backgroundColor: '#efefef' }">
+          <el-table-column align="center" prop="organiza" label="地区" show-overflow-tooltip />
+          <el-table-column align="center" prop="count" label="新增数量" />
+          <el-table-column align="center" prop="ratio" label="较比上月" :formatter="(_, __, val) => `${parseInt(val) >= 0 ? '增加' : '减少'}${Math.abs(val)}%`" />
+        </el-table>
+      </el-card>
+    </WaterfallItem>
+  </Waterfall>
 </template>
 
 <script>
 import { Random } from 'mockjs'
 import * as echarts from 'echarts'
+import Waterfall from '@/components/Waterfall'
+import WaterfallItem from '@/components/waterfall/WaterfallItem'
 
 const city = ['辛集市', '定州市', '衡水市', '廊坊市', '沧州市', '承德市', '张家口市', '保定市', '邢台市', '邯郸市', '秦皇岛市', '唐山市', '石家庄市']
 const posit = ['医院', '市政厅门口', '学校', '公园', '商场', '小区', '银行', '车站', '机场', '码头', '火车站', '地铁站', '公交', '高速', '收费站']
@@ -138,8 +160,11 @@ const status = ['正常', '异常', '维修', '报废', '未知']
 const type = ['枪机', '半球', '球机', '云台', '红外', '全景', '人脸', '车牌', '高清', '标清', '智能', '高速', '全景', '人脸', '车牌', '高清', '标清', '智能', '高速']
 export default {
   name: 'index',
+  components: { Waterfall, WaterfallItem },
   data() {
     return {
+      integer: () => Random.integer(200, 300),
+      rcolor: () => Random.color(),
       radio1: '本月',
       prevMonth: {
         newCamera: 563,
@@ -166,7 +191,11 @@ export default {
   },
 
   mounted() {
-    this.initChart()
+    try {
+      this.initChart()
+    } catch (error) {
+      // pass
+    }
   },
 
   methods: {
@@ -182,7 +211,7 @@ export default {
           trigger: 'item',
         },
         radar: {
-          indicator: Array.from({ length: posit.length }, (_, i) => ({ name: posit[i], max: 120 })),
+          indicator: Array.from({ length: posit.length }, (_, i) => ({ name: posit[i] })),
           center: ['50%', '50%'],
           splitArea: {
             areaStyle: {
@@ -254,4 +283,4 @@ export default {
 }
 </script>
 
-<style lang="css" scoped></style>
+<style lang="scss" scoped></style>

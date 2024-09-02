@@ -34,6 +34,7 @@ module.exports = defineConfig({
     'vue/no-reserved-component-names': 'off', // 关闭禁止使用保留字命名组件
     'vue/no-side-effects-in-computed-properties': 'off', // 关闭禁止在计算属性中对属性修改
     'accessor-pairs': 2,
+    'no-trailing-spaces': 'off',
     'arrow-spacing': [
       2,
       {

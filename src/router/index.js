@@ -9,8 +9,8 @@ export const constantRoutes = [
     component: () => import('@/views/dashboard'),
   },
   {
-    path: '/test',
-    component: () => import('@/views/test'),
+    path: '/user',
+    component: () => import('@/views/user'),
   },
   {
     path: '/client',
@@ -21,8 +21,20 @@ export const constantRoutes = [
     component: () => import('@/views/camera'),
   },
   {
+    path: '/test',
+    component: () => import('@/views/test'),
+  },
+  {
     path: '/test2',
     component: () => import('@/views/test2'),
+  },
+  {
+    path: '/other',
+    component: () => import('@/views/other'),
+  },
+  {
+    path: '/waterfall',
+    component: () => import('@/views/waterfall'),
   },
 ]
 
