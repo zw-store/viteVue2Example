@@ -85,6 +85,5 @@ export default {
   width: v-bind('calcWidth');
   height: v-bind('calcHeight');
   overflow: hidden;
-  float: left;
 }
 </style>

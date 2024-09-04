@@ -21,6 +21,11 @@ export const constantRoutes = [
     component: () => import('@/views/camera'),
   },
   {
+    path: '/operate',
+    component: () => import('@/views/operate'),
+  },
+
+  {
     path: '/test',
     component: () => import('@/views/test'),
   },

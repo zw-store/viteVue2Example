@@ -111,17 +111,23 @@
       </div>
     </WaterfallItem>
 
-    <WaterfallItem width="30%">
-      <div ref="chart" style="height: 300px"></div>
+    <WaterfallItem width="30%" height="280">
+      <el-card class="h-full" :body-style="{ padding: 0, height: '100%' }">
+        <template #header>
+          <p>较比上月操作次数最多的用户</p>
+        </template>
+
+        <ScrollPanel style="height: 100%; padding: 4px 6px">
+          <el-table size="mini" :data="prevMonth.operByUser" stripe :header-cell-style="{ backgroundColor: '#efefef' }">
+            <el-table-column align="center" prop="name" label="用户" />
+            <el-table-column align="center" prop="ratio" label="较比上月" :formatter="(_, __, val) => `${parseInt(val) >= 0 ? '增加' : '减少'}${Math.abs(val)}%`" />
+          </el-table>
+        </ScrollPanel>
+      </el-card>
     </WaterfallItem>
 
-    <WaterfallItem width="30%" height="180">
-      <ScrollPanel style="height: 100%; padding: 4px 6px">
-        <el-table size="mini" :data="prevMonth.operByUser" stripe :header-cell-style="{ backgroundColor: '#efefef' }" disabled-affix>
-          <el-table-column align="center" prop="name" label="name" />
-          <el-table-column align="center" prop="count" label="count" />
-        </el-table>
-      </ScrollPanel>
+    <WaterfallItem width="30%">
+      <div ref="chart" style="height: 300px"></div>
     </WaterfallItem>
 
     <WaterfallItem width="50%">
@@ -129,12 +135,22 @@
     </WaterfallItem>
 
     <WaterfallItem width="30%">
-      <ScrollPanel style="height: 350px">
-        <el-table size="mini" :data="Array.from(prevMonth.operByUser).reverse()" stripe :header-cell-style="{ backgroundColor: '#efefef' }" disabled-affix>
-          <el-table-column align="center" prop="name" label="name" />
-          <el-table-column align="center" prop="count" label="count" />
-        </el-table>
-      </ScrollPanel>
+      <el-card class="h-full" :body-style="{ padding: 0, height: '100%' }">
+        <template #header>
+          <p>本月回归用户名单</p>
+        </template>
+
+        <ScrollPanel style="height: 100%; padding: 4px 6px">
+          <el-table size="mini" :data="regresList" stripe :header-cell-style="{ backgroundColor: '#efefef' }" disabled-affix>
+            <el-table-column align="center" prop="name" label="用户" />
+            <el-table-column align="center" prop="time" label="上次登录时间" />
+          </el-table>
+        </ScrollPanel>
+      </el-card>
+    </WaterfallItem>
+
+    <WaterfallItem width="50%" height="300px">
+      <div ref="chart2" style="height: 100%"></div>
     </WaterfallItem>
   </Waterfall>
 </template>
@@ -143,6 +159,7 @@
 import * as echarts from 'echarts'
 import Waterfall from '@/components/Waterfall'
 import WaterfallItem from '@/components/waterfall/WaterfallItem'
+import { Random } from 'mockjs'
 
 export default {
   name: 'dashboard',
@@ -156,30 +173,21 @@ export default {
         newUser: 563,
         activeUser: 320,
         zombieUser: 39,
-        operByUser: [
-          { name: '张三', count: 194 },
-          { name: '李四', count: 98 },
-          { name: '王五', count: 78 },
-          { name: '赵六', count: 67 },
-          { name: '孙七', count: 56 },
-          { name: '周八', count: 45 },
-          { name: '吴九', count: 34 },
-          { name: '郑十', count: 23 },
-          { name: '钱十一', count: 12 },
-          { name: '孔十二', count: 1 },
-        ],
+        operByUser: Array.from({ length: 10 }, (_, i) => ({ name: Random.cname(), count: Random.integer(10, 90), ratio: Random.integer(0, 15) })),
       },
       currMonth: {
         newUser: 592,
         activeUser: 120,
         zombieUser: 67,
       },
+      regresList: Array.from({ length: 10 }, (_, i) => ({ name: Random.cname(), time: Random.datetime('2023-MM-dd') })),
     }
   },
 
   mounted() {
     this.initChart()
     this.initChart1()
+    this.initChart2()
   },
 
   methods: {
@@ -196,7 +204,10 @@ export default {
       chart.setOption({
         title: { text: '用户登录方式', left: 'center' },
         tooltip: { trigger: 'item', formatter: '{a} <br/>{b} : {c} ({d}%)' },
-        legend: { orient: 'vertical', left: 'left', data: ['本月', '上月'] },
+        legend: [
+          { orient: 'vertical', left: 'left', data: ['本月', '上月'] },
+          { orient: 'vertical', left: 'right', data: ['密码登录', 'KPI'] },
+        ],
         radius: ['40%', '70%'],
         center: ['50%', '70%'],
         color: ['#37A2DA', '#32C5E9', '#67E0E3', '#9FE6B8', '#FFDB5C', '#ff9f7f', '#fb7293', '#E062AE', '#E690D1', '#e7bcf3', '#9d96f5', '#8378EA', '#96BFFF'],
@@ -309,6 +320,95 @@ export default {
             data: this.prevMonth.operByUser.map(item => ({ value: item.count, name: item.name })),
           },
         ],
+      })
+    },
+    initChart2() {
+      const chart = echarts.init(this.$refs.chart2)
+      const data = getVirtualData(2021).sort((a, b) => a[0] - b[0])
+      function getVirtualData(year) {
+        const date = +echarts.time.parse(year + '-08-01')
+        const end = +echarts.time.parse(+year + '-09-01')
+        const dayTime = 3600 * 1000 * 24
+        const data = []
+        for (let time = date; time < end; time += dayTime) {
+          data.push([echarts.time.format(time, '{yyyy}-{MM}-{dd}', false), Math.floor(Math.random() * 1000)])
+        }
+        return data
+      }
+
+      chart.setOption({
+        title: {
+          text: '空闲操作日',
+          left: 'left',
+        },
+        backgroundColor: '#f5f5f5',
+        tooltip: {
+          position: 'top',
+          formatter: params => params.value[0] + '：' + params.value[1],
+        },
+        calendar: {
+          top: 'bottom',
+          left: 'center',
+          width: '70%',
+          height: '80%',
+          orient: 'horizontal',
+          cellSize: ['auto', 40],
+          yearLabel: { show: false, margin: 50, fontSize: 30 },
+          monthLabel: { show: false, nameMap: 'cn', margin: 15, fontSize: 20, color: '#999' },
+          dayLabel: { firstDay: 1, nameMap: ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'] },
+          range: ['2021-08'],
+        },
+        visualMap: {
+          min: 0,
+          max: 1000,
+          type: 'piecewise',
+          left: 'right',
+          bottom: 20,
+          inRange: { color: ['#C7DBFF', '#5291FF'] },
+          seriesIndex: 1,
+          orient: 'vertical',
+        },
+        series: [
+          {
+            name: '高频操作量',
+            type: 'effectScatter',
+            coordinateSystem: 'calendar',
+            calendarIndex: 0,
+            data: [...data].sort((a, b) => b[1] - a[1]).slice(0, 5),
+            symbolSize: val => val[1] / 50,
+            symbolOffset: ['100%', '0%'],
+            showEffectOn: 'render',
+            rippleEffect: { brushType: 'stroke', period: 10, scale: 2.5 },
+            itemStyle: { color: '#bf444c', shadowBlur: 10, shadowColor: '#409EFF' },
+            zlevel: 1,
+            silent: true,
+          },
+          {
+            type: 'heatmap',
+            name: '空闲日',
+            coordinateSystem: 'calendar',
+            selectedMode: 'multiple',
+            data: data,
+            label: {
+              show: true,
+              align: 'center',
+              offset: [-10, 0],
+              formatter: params => {
+                return params.value[0].slice(5)
+              },
+            },
+            select: {
+              itemStyle: { color: 'yellow', borderColor: '#11abff' },
+              label: { show: true, position: 'inside' },
+            },
+          },
+        ],
+      })
+
+      chart.dispatchAction({
+        type: 'select',
+        seriesName: '空闲日',
+        dataIndex: Array.from({ length: 8 }, (_, i) => data.findIndex(item => item[0] === '2021-08-1' + (i + 1))),
       })
     },
   },
