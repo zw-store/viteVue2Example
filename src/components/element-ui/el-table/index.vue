@@ -26,7 +26,7 @@
     @mouseleave="handleMouseLeave($event)"
   >
     <div class="hidden-columns" ref="hiddenColumns"><slot></slot></div>
-    <affix :container="$el" :disabled="disabledAffix">
+    <affix :container="affixTarget || $el" :disabled="disabledAffix">
       <div v-if="showHeader" v-mousewheel="handleHeaderFooterMousewheel" class="el-table__header-wrapper" ref="headerWrapper">
         <TableHeader
           ref="tableHeader"
@@ -88,7 +88,7 @@
         fixedHeight,
       ]"
     >
-      <affix :container="$el" :disabled="disabledAffix">
+      <affix :container="affixTarget || $el" :disabled="disabledAffix">
         <div v-if="showHeader" class="el-table__fixed-header-wrapper" style="position: unset; overflow: hidden" ref="fixedHeaderWrapper">
           <table-header
             ref="fixedTableHeader"
@@ -151,7 +151,7 @@
         fixedHeight,
       ]"
     >
-      <affix :container="$el" :disabled="disabledAffix">
+      <affix :container="affixTarget || $el" :disabled="disabledAffix">
         <div v-if="showHeader" class="el-table__fixed-header-wrapper" style="pointer-events: none; overflow: auto" ref="rightFixedHeaderWrapper">
           <table-header
             ref="rightFixedTableHeader"
@@ -216,7 +216,8 @@
 
 <script>
 import Table from './table.vue'
-import affix from './affix.vue'
+// import affix from './affix.vue'
+import affix from './affix2'
 
 export default {
   name: 'ElTable',
@@ -262,6 +263,7 @@ export default {
     lazy: Boolean,
     load: Function,
     disabledAffix: Boolean,
+    affixTarget: null,
   },
   methods: {
     doLayout() {
