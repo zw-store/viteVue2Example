@@ -25,7 +25,7 @@
     <RightToolbar :show-search.sync="showSearch" :table.sync="table" @queryTable="getList" @interaction="x => (table.hiddenColumns = x)" :componentName="$options.name" @sequence-reset="tableReady"></RightToolbar>
 
     <el-table :data="table.data" v-loading="table.loading" border stripe :header-cell-style="{ backgroundColor: '#efefef' }" :hidden-columns="table.hiddenColumns" @header-cell-dragend="headerCellDragend" @header-dragend="headerDragend" @table-ready="tableReady">
-      <!-- <el-table-column align="center" type="index" label="#" fixed="left" /> -->
+      <el-table-column align="center" type="index" label="#" fixed="left" />
       <el-table-column align="center" prop="name" label="名称" width="200" />
       <el-table-column align="center" prop="address" label="地址" width="200" />
       <template v-for="n in 6">
@@ -38,13 +38,13 @@
         </template>
       </el-table-column>
 
-      <!-- <el-table-column align="center" prop="date" label="时间" fixed="right" />
+      <el-table-column align="center" prop="date" label="时间" fixed="right" />
 
       <el-table-column align="center" label="操作" fixed="right">
         <template slot-scope="{ row, column: col }">
           <el-button type="text" size="mini">删除</el-button>
         </template>
-      </el-table-column> -->
+      </el-table-column>
     </el-table>
 
     <div class="affix-container2 !bg-yellow-600" style="height: 150vh"></div>

@@ -41,6 +41,18 @@ export const constantRoutes = [
     path: '/waterfall',
     component: () => import('@/views/waterfall'),
   },
+  {
+    path: '/color',
+    component: () => import('@/views/color'),
+  },
+  {
+    path: '/calendar',
+    component: () => import('@/views/calendar'),
+  },
+  {
+    path: '/chart',
+    component: () => import('@/views/chart'),
+  },
 ]
 
 const router = new Router({

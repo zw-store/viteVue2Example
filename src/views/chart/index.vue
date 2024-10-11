@@ -7,6 +7,24 @@
 
 <template>
   <el-row :gutter="10">
+    <el-col>
+      <el-form :model="form" inline size="mini" label-width="100px">
+        <el-form-item label="时间范围">
+          <el-date-picker v-model="form.date" type="datetimerange" placeholder="选择日期时间" />
+        </el-form-item>
+
+        <el-form-item label="操作类型">
+          <el-select v-model="form.action" placeholder="请输入名称" multiple>
+            <el-option v-for="item in actions" :key="item.name" :label="item.name" :value="item.name" />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item>
+          <el-button type="primary">查询</el-button>
+        </el-form-item>
+      </el-form>
+    </el-col>
+
     <el-col :span="22">
       <el-card style="height: 700px" :body-style="{ height: '100%', background: '#fefefe', color: '#fff', border: '1px solid #186886' }">
         <div ref="chart" style="height: calc(100% - 10px)"></div>
@@ -19,7 +37,17 @@
 import * as echarts from 'echarts'
 import { Random } from 'mockjs'
 import dayjs from 'dayjs'
-import jsondata from './data.json'
+
+const actions = [
+  { name: '登录', color: Random.color() },
+  { name: '退出', color: Random.color() },
+  { name: '订阅', color: Random.color() },
+  { name: '播放失败', color: Random.color() },
+  { name: '回放视频', color: Random.color() },
+  { name: '控制设备', color: Random.color() },
+]
+
+const categories = () => ['admin', 'zlxtest3', '钟德成190（海康公司）', 'zlx_test', '钟德成（海康公司）', 'test2', 'spxj', 'gqj', 'junfenqu', 'swzbs'].sort(() => Math.random() - 0.5)
 
 const groupBy = (data, key) => {
   return data.reduce((acc, cur) => {
@@ -35,6 +63,12 @@ export default {
     return {
       integer: () => Random.integer(200, 300),
       rcolor: () => Random.color(),
+      actions,
+      form: {
+        date: [dayjs().subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss'), dayjs().format('YYYY-MM-DD HH:mm:ss')],
+        name: '',
+        action: [],
+      },
       pagination: {
         total: 0,
         pageSize: 10,
@@ -52,32 +86,26 @@ export default {
       const myChart = echarts.init(this.$refs.chart)
       let minAxis = 0
       let maxAxis = 0
-      const actions = new Set()
-      const colorBy = {}
 
       const generateData = () => {
-        const sortable = jsondata.sort((a, b) => a.time - b.time)
-        minAxis = sortable[0].stamp
-        maxAxis = sortable[sortable.length - 1].stamp
+        const data = []
+        categories().forEach((_, index) => {
+          const types = Array.from({ length: 10 }, () => ({ ...Random.pick(actions), time: +new Date(Random.time(`2024-09-0${Random.integer(1, 9)} HH:mm:ss`)) })).sort((a, b) => a.time - b.time)
 
-        const data = groupBy(jsondata, 'name')
-        return Object.entries(data).reduce((acc, cur, index) => {
-          const [key, values] = cur
-          let _startTime = minAxis
-          const items = values
-            .sort((a, b) => a.stamp - b.stamp)
-            .map((item, ii, arr) => {
-              const nextItem = arr[ii + 1]
-              const duration = nextItem ? nextItem.stamp - item.stamp : 0
-              const value = [index, _startTime, (_startTime += duration), duration]
-              _startTime += duration
-              const color = colorBy[item.opera] || (colorBy[item.opera] = Random.color())
-              actions.has(item.opera) || actions.add(item.opera)
-              return { name: item.opera, value, itemStyle: { color } }
-            })
-          acc[key] = items
-          return acc
-        }, {})
+          maxAxis = types[types.length - 1].time
+          let baseTime = (minAxis = types[0].time)
+
+          types.forEach((item, ii, arr) => {
+            const nextItem = arr[ii + 1]
+            const duration = nextItem ? nextItem.time - item.time : 0
+            const value = [index, baseTime, (baseTime += duration), duration]
+            baseTime += duration
+
+            data.push({ name: item.name, value, itemStyle: { color: item.color } })
+          })
+        })
+
+        return groupBy(data, 'name')
       }
 
       function renderItem(params, api) {
@@ -111,24 +139,32 @@ export default {
         )
       }
 
-      const findBy = (obj, key) => {
-        return Object.values(obj).reduce((acc, cur) => {
-          const item = cur.filter(item => item.name === key)
-          if (item.length) {
-            acc = acc.concat(item)
-          }
-          return acc
-        }, [])
-      }
-
       myChart.setOption({
         baseOption: {
+          title: {
+            text: '用户行为统计',
+            left: 'left',
+          },
+          brush: {
+            show: false,
+            brushType: 'rect',
+            brushLink: 'all',
+            brushMode: 'multiple',
+            transformable: true,
+            toolbox: [],
+            xAxisIndex: 0,
+            brushStyle: {
+              borderWidth: 1,
+              color: 'rgba(100, 116, 139, 0.3)',
+              borderColor: 'rgba(238, 240, 215, 0.8)',
+            },
+          },
           timeline: {
             width: '50%',
             left: '50%',
             axisType: 'category',
             autoPlay: false,
-            playInterval: 1000,
+            playInterval: 5000,
             data: Array.from({ length: 10 }, (_, i) => ({ value: i + 1, tooltip: { formatter: `第${i + 1}页` } })),
           },
           backgroundColor: '#fefefe',
@@ -152,9 +188,9 @@ export default {
         options: [
           ...Array.from({ length: 10 }, () => {
             const groupByDataName = generateData()
-            const category = Object.keys(groupByDataName)
+            const category = categories()
             return {
-              legend: [{ data: Array.from(actions) }],
+              legend: [{ data: Object.keys(groupByDataName) }],
               xAxis: [
                 {
                   min: minAxis,
@@ -187,7 +223,7 @@ export default {
               ],
               yAxis: [
                 { data: category, axisLine: { show: true }, axisTick: { show: true }, splitLine: { show: true } },
-                { data: category, axisLine: { show: true }, axisTick: { show: true }, splitLine: { show: true } },
+                // { data: category, axisLine: { show: true }, axisTick: { show: true }, splitLine: { show: true } },
               ],
               tooltip: {
                 trigger: 'item',
@@ -208,14 +244,14 @@ export default {
                           `
                 },
               },
-              series: Array.from(actions, item => {
+              series: Object.entries(groupByDataName).map(([key, value]) => {
                 return {
                   type: 'custom',
-                  name: item,
+                  name: key,
                   renderItem,
                   itemStyle: { opacity: 0.8 },
                   encode: { x: [1, 2], y: 0 },
-                  data: findBy(groupByDataName, item),
+                  data: value,
                 }
               }),
             }

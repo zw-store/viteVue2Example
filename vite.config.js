@@ -20,7 +20,7 @@ export default defineConfig(({ mode, command }) => {
 
   return {
     root: process.cwd(),
-    mode: 'development',
+    // mode: 'development',
     base: VITE_APP_ENV === 'production' ? './' : '/',
     server: {
       port: 10001,
@@ -44,15 +44,24 @@ export default defineConfig(({ mode, command }) => {
         },
       },
     },
-    esbuild: {
-      jsxFactory: '$createElement',
-      jsxFragment: '$createFragment',
-      loader: {
-        '.js': 'jsx',
-        '.jsx': 'jsx',
-        '.ts': 'tsx',
-        '.tsx': 'tsx',
-        '.vue': 'vue',
+    build: {
+      outDir: 'dist-examples',
+      sourcemap: true,
+      assetsDir: 'assets',
+      rollupOptions: {
+        output: {
+          entryFileNames: 'assets/js/[name].[hash].js',
+          assetFileNames: 'assets/[ext]/[name].[hash].[ext]',
+          manualChunks: {
+            lodash: ['lodash-es'],
+            axios: ['axios'],
+            'vue-vendor': ['vue'],
+            'element-ui': ['element-ui'],
+          },
+          chunkFileNames() {
+            return `assets/js/[name].[hash].js`
+          },
+        },
       },
     },
     resolve: {
@@ -67,7 +76,7 @@ export default defineConfig(({ mode, command }) => {
     plugins: [
       vue2Plugin(),
       vue2JsxPlugin(),
-      ViteEjsPlugin({ title: 'vite-cli' }),
+      ViteEjsPlugin({ title: 'vite-example' }),
       EslintPlugin({
         cache: false,
         include: ['src/**/*.vue', 'src/**/*.js', 'src/**/*.jsx'],
@@ -83,5 +92,9 @@ export default defineConfig(({ mode, command }) => {
       }),
       VitePluginBuildLegacy(),
     ],
+    optimizeDeps: {
+      include: ['vue', 'sass', 'axios', 'dayjs', 'lodash-es', 'element-ui', '@fullcalendar/*'],
+      exclude: [],
+    },
   }
 })

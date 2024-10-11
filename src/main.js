@@ -18,11 +18,13 @@ import 'virtual:svg-icons-register'
 import SvgIcon from '@/components/SvgIcon'
 import RightToolbar from '@/components/RightToolbar'
 import ScrollPanel from '@/components/scrollPanel'
+import CustomTitle from '@/components/CustomTitle'
 import Layout from '@/layout'
 
 Vue.component('SvgIcon', SvgIcon)
 Vue.component('RightToolbar', RightToolbar)
 Vue.component('ScrollPanel', ScrollPanel)
+Vue.component('CustomTitle', CustomTitle)
 Vue.component('Layout', Layout)
 
 Vue.config.productionTip = false
