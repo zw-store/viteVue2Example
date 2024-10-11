@@ -276,7 +276,7 @@ export default {
           handleCellBackgroundOver(td_cells, rowIndex, columnIndex)
         })
 
-        const __calendar_channel_transmit_level__ = (el.__calendar_channel_transmit_level__ = _ => {
+        const __calendar_channel_transmit_leave__ = (el.__calendar_channel_transmit_leave__ = _ => {
           const th_cells = el.querySelectorAll('th')
           const td_cells = el.querySelectorAll('td')
 
@@ -285,7 +285,7 @@ export default {
         })
 
         window.addEventListener('__calendar_channel_transmit_enter__', __calendar_channel_transmit_enter__, false)
-        window.addEventListener('__calendar_channel_transmit_level__', __calendar_channel_transmit_level__, false)
+        window.addEventListener('__calendar_channel_transmit_leave__', __calendar_channel_transmit_leave__, false)
 
         const mouseover = (el.__bind_mouseover_func = e => {
           const cell = e.target.closest('td') || e.target.closest('th')
@@ -327,7 +327,7 @@ export default {
 
           handleCellBackgroundByOut(th_cells, () => {
             window.dispatchEvent(
-              new CustomEvent('__calendar_channel_transmit_level__', {
+              new CustomEvent('__calendar_channel_transmit_leave__', {
                 detail: {},
                 bubbles: false,
                 cancelable: true,
@@ -337,7 +337,7 @@ export default {
 
           handleCellBackgroundByOut(td_cells, () => {
             window.dispatchEvent(
-              new CustomEvent('__calendar_channel_transmit_level__', {
+              new CustomEvent('__calendar_channel_transmit_leave__', {
                 detail: {},
                 bubbles: false,
                 cancelable: true,
@@ -354,12 +354,12 @@ export default {
         const mouseover = el.__bind_mouseover_func
         const mouseout = el.__bind_mouseout_func
         const __calendar_channel_transmit_enter__ = el.__calendar_channel_transmit_enter__
-        const __calendar_channel_transmit_level__ = el.__calendar_channel_transmit_level__
+        const __calendar_channel_transmit_leave__ = el.__calendar_channel_transmit_leave__
 
         el.removeEventListener('mouseover', mouseover)
         el.removeEventListener('mouseout', mouseout)
         window.removeEventListener('__calendar_channel_transmit_enter__', __calendar_channel_transmit_enter__)
-        window.removeEventListener('__calendar_channel_transmit_level__', __calendar_channel_transmit_level__)
+        window.removeEventListener('__calendar_channel_transmit_leave__', __calendar_channel_transmit_leave__)
       },
     },
 
